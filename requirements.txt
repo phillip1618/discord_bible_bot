@@ -1,0 +1,3 @@
+discord
+python-dotenv
+sentry_sdk
