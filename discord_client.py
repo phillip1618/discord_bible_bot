@@ -19,7 +19,7 @@ class DiscordClient(discord.Client):
             votd_string_dict = votd_text[21:-2]
             votd_dict = ast.literal_eval(votd_string_dict)
 
-            votd_verse = votd_dict['votd']['content']
+            votd_verse = votd_dict['votd']['text'][7:-7]
             votd_ref = votd_dict['votd']['display_ref']
             
             votd_final = '"' + votd_verse + '" -' + votd_ref
