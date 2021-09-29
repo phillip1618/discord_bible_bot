@@ -1,6 +1,13 @@
 import discord
 import requests
 import ast
+import os
+
+from time import sleep
+from dotenv import load_dotenv
+from threading import Thread
+
+load_dotenv()
 
 class DiscordClient(discord.Client):
     def __init__(self):
@@ -10,6 +17,8 @@ class DiscordClient(discord.Client):
 
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self))
+        votd_thread = Thread(target = self.votd_daily, daemon = True)
+        votd_thread.start()
 
     async def on_message(self, message):
         if message.author == self.user:
@@ -36,3 +45,9 @@ class DiscordClient(discord.Client):
         votd_final = '"' + votd_verse + '" -' + votd_ref
 
         return votd_final
+
+    def votd_daily(self):
+        webhook = discord.Webhook.from_url(os.getenv('TEST_WEBHOOK_URL'), adapter=discord.RequestsWebhookAdapter())
+        while True:
+            webhook.send(self.votd)
+            sleep(6)
