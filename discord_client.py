@@ -2,6 +2,7 @@ import discord
 import requests
 import ast
 import os
+import datetime
 
 from time import sleep
 from dotenv import load_dotenv
@@ -47,7 +48,8 @@ class DiscordClient(discord.Client):
         return votd_final
 
     def votd_daily(self):
-        webhook = discord.Webhook.from_url(os.getenv('TEST_WEBHOOK_URL'), adapter=discord.RequestsWebhookAdapter())
+        webhook = discord.Webhook.from_url(os.getenv('VOTD_WEBHOOK_URL'), adapter=discord.RequestsWebhookAdapter())
         while True:
-            webhook.send(self.votd)
-            sleep(6)
+            if datetime.datetime.utcnow().hour == 16 and datetime.datetime.utcnow().minute == 30:
+                webhook.send(self.votd)
+                sleep(61)
