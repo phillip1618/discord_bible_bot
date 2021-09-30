@@ -25,11 +25,11 @@ class DiscordClient(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content.startswith('$votd'):
+        if message.content.startswith('#votd'):
 
             await message.channel.send(self.votd)
 
-        #if message.content.startswith('$search'):
+        #if message.content.startswith('#search'):
 
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')
