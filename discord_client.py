@@ -51,5 +51,6 @@ class DiscordClient(discord.Client):
         webhook = discord.Webhook.from_url(os.getenv('VOTD_WEBHOOK_URL'), adapter=discord.RequestsWebhookAdapter())
         while True:
             if datetime.datetime.utcnow().hour == 16 and datetime.datetime.utcnow().minute == 30:
+                self.votd = self.get_votd()
                 webhook.send(self.votd)
                 sleep(61)
