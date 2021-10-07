@@ -31,8 +31,8 @@ class BibleVerse:
 
         #print(html)
         soup = BeautifulSoup(html, 'html.parser')
-        passage_text = soup.find('p', class_='chapter-1')
-        print(passage_text.text)
+        passage_text = soup.find_all('div', class_='passage-text')
+        print(passage_text)
 
         return soup
 
