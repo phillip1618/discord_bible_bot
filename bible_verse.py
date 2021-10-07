@@ -31,19 +31,51 @@ class BibleVerse:
         page = urlopen(url)
         html = page.read().decode("utf-8")
 
-        #print(html)
         soup = BeautifulSoup(html, 'html.parser')
+        sample_html_text_list = soup.find_all('div')
+        #print(sample_html_text_list)
         html_text_list = soup.find_all('div', class_='passage-text')
-        #print(html_text_list)
 
         for html in html_text_list:
-            chapter_num = html.find('span', class_='chapternum').get_text()
-            passage_text = html.find('p').text
+            passage_text_html = html.find_all('p')
+            passage_text = ''
+            for p in passage_text_html:
+                passage_text += p.text
             passage_text_list.append(passage_text)
 
         return passage_text_list
 
-    def format_passage_text(self, passage_text_list):
+    def get_verses(self, search_components):
+        verses = search_components[0]
+        verses_list = verses.split(',')
+
+        formatted_verse_list = []
+
+        for verse in verses_list:
+
+            formatted_verse = ''
+            str_index = 0
+
+            if verse[0].isdigit():
+                formatted_verse += verse[0] + ' '
+                str_index += 1
+
+            while not verse[str_index].isdigit():
+                formatted_verse += verse[str_index]
+                str_index += 1
+
+            formatted_verse += ' ' + verse[str_index:]
+            formatted_verse_list.append(formatted_verse)
+
+        return formatted_verse_list
+    
+    def format_passage_text(self, passage_text_list, formatted_verse_list):
+
+        n = len(passage_text_list)
+
+        for i in range(n):
+            passage_text_list = passage_text_list.replace("\xa0", " ")
+
         return
     
     def get_verse(self):
@@ -59,3 +91,6 @@ if __name__ == '__main__':
     a = x.get_passage_text(z)
 
     print(a)
+
+    b = x.get_verses(y)
+    print(b)
