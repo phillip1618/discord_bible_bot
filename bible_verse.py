@@ -1,4 +1,5 @@
 from urllib.request import urlopen
+from bs4 import BeautifulSoup
 
 class BibleVerse:
     def __init__(self):
@@ -25,7 +26,15 @@ class BibleVerse:
         return url
 
     def get_html(self, url):
-        return
+        page = urlopen(url)
+        html = page.read().decode("utf-8")
+
+        #print(html)
+        soup = BeautifulSoup(html, 'html.parser')
+        passage_text = soup.find('p', class_='chapter-1')
+        print(passage_text.text)
+
+        return soup
 
     def get_verse(self):
         return
@@ -36,3 +45,8 @@ if __name__ == '__main__':
     print(y)
     z = x.get_url(y)
     print(z)
+
+    a = x.get_html(z)
+
+    #print(a.get_text())
+    #print(a)
