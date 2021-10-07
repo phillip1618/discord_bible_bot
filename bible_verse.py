@@ -1,3 +1,5 @@
+import re
+
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -74,23 +76,30 @@ class BibleVerse:
         n = len(passage_text_list)
 
         for i in range(n):
-            passage_text_list = passage_text_list.replace("\xa0", " ")
+            passage_text_list[i] = passage_text_list[i].replace("\xa0", " ")
+            passage_text_list[i] = re.sub('\([A-Z]\)', '', passage_text_list[i])
+            passage_text_list[i] = re.sub('\[[a-z]\]', '', passage_text_list[i])
 
-        return
+            passage_text_list[i] += '-' + formatted_verse_list[i]
+        
+        return passage_text_list
     
     def get_verse(self):
         return
 
 if __name__ == '__main__':
-    x = BibleVerse()
-    y = x.separate_query('#search Genesis 1:1-9, John 1:1-9!ESV')
-    print(y)
-    z = x.get_url(y)
-    print(z)
+    BibleVerseo = BibleVerse()
+    search_components = BibleVerseo.separate_query('#search Genesis 1:1-9, John 1:1-9!ESV')
+    print(search_components)
+    url = BibleVerseo.get_url(search_components)
+    print(url)
 
-    a = x.get_passage_text(z)
+    passage_text_list = BibleVerseo.get_passage_text(url)
 
-    print(a)
+    print(passage_text_list)
 
-    b = x.get_verses(y)
-    print(b)
+    formatted_verse_list = BibleVerseo.get_verses(search_components)
+    print(formatted_verse_list)
+
+    formatted_passage_text_list = BibleVerseo.format_passage_text(passage_text_list, formatted_verse_list)
+    print(formatted_passage_text_list)
