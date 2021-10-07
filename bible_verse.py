@@ -25,7 +25,9 @@ class BibleVerse:
 
         return url
 
-    def get_html(self, url):
+    def get_passage_text(self, url):
+        passage_text_list = []
+        
         page = urlopen(url)
         html = page.read().decode("utf-8")
 
@@ -36,11 +38,14 @@ class BibleVerse:
 
         for html in html_text_list:
             chapter_num = html.find('span', class_='chapternum').get_text()
-            passage_text = html.find('p')
-            print(passage_text.text)
+            passage_text = html.find('p').text
+            passage_text_list.append(passage_text)
 
-        return soup
+        return passage_text_list
 
+    def format_passage_text(self, passage_text_list):
+        return
+    
     def get_verse(self):
         return
 
@@ -51,7 +56,6 @@ if __name__ == '__main__':
     z = x.get_url(y)
     print(z)
 
-    a = x.get_html(z)
+    a = x.get_passage_text(z)
 
-    #print(a.get_text())
-    #print(a)
+    print(a)
