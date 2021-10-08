@@ -37,6 +37,7 @@ class DiscordClient(discord.Client):
             
             for verse in bible_search.verses_list:
                 await message.channel.send(verse)
+                await message.channel.send('_ _')
 
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')
