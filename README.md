@@ -4,7 +4,7 @@
 
 ## Usage
 
-In the "verse-of-the-day" text channel, there is a webhook that has been integrated called "Verse of the Day Bot", which receives a response from the Bible Gateway Verse of the Day API (https://www.biblegateway.com/usage/votd/custom_votd/) and sends the verse into the channel. 
+In the "verse-of-the-day" text channel, there is a webhook that has been integrated called "Verse of the Day Bot", which receives a response from the Bible Gateway Verse of the Day API (<https://www.biblegateway.com/usage/votd/custom_votd/>) and sends the verse into the channel.
 
 If users wish to reference the verse of the day, then they would have to type in `#votd` and the Bible Bot will send the verse.
 
@@ -12,7 +12,7 @@ If users wish to reference the verse of the day, then they would have to type in
 
 A Sentry account must be created, and a Sentry DSN must be obtained. An AWS account must also be created. A `.env` file must be set up with the following values:
 
-```
+```text
 TOKEN=secret-discord-token
 SENTRY_SDK_INIT=secret-sentry-dsn
 SENTRY_PROD='DEV' or 'PROD'
