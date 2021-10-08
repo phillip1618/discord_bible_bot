@@ -91,11 +91,14 @@ class BibleSearch:
         search_components = self.separate_query()
         url = self.get_url(search_components)
         passage_text_list = self.get_passage_text(url)
-        formatted_verse_list = self.get_verses(search_components)
-        
-        verses_list = self.format_passage_text(passage_text_list, formatted_verse_list)
 
-        return verses_list
+        if passage_text_list:
+            formatted_verse_list = self.get_verses(search_components)
+            verses_list = self.format_passage_text(passage_text_list, formatted_verse_list)
+            return verses_list
+        else:
+            verses_list = []
+            return verses_list
 
 if __name__ == '__main__':
     BibleSearchx = BibleSearch('#search Genesis 1:1-9, John 1:1-9!ESV')
