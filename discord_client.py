@@ -40,7 +40,7 @@ class DiscordClient(discord.Client):
                     await message.channel.send(verse)
                     await message.channel.send('_ _')
             else:
-                await message.channel.send('Please put in appropriate query for Bible verses.')
+                await message.channel.send('Invalid query. Please input appropriate query for Bible verses.')
 
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')
