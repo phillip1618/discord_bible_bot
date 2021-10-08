@@ -4,11 +4,12 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 class BibleVerse:
-    def __init__(self):
-        self.verse = self.get_verse()
+    def __init__(self, query):
+        self.query = query
+        self.verses_list = self.get_verses_list()
 
-    def separate_query(self, query):
-        search = query[7:]
+    def separate_query(self):
+        search = self.query[7:]
         search = search.replace(" ", "")
         search_components = search.split("!")
 
@@ -84,22 +85,16 @@ class BibleVerse:
         
         return passage_text_list
     
-    def get_verse(self):
-        return
+    def get_verses_list(self):
+        search_components = self.separate_query()
+        url = self.get_url(search_components)
+        passage_text_list = self.get_passage_text(url)
+        formatted_verse_list = self.get_verses(search_components)
+        
+        verses_list = self.format_passage_text(passage_text_list, formatted_verse_list)
+
+        return verses_list
 
 if __name__ == '__main__':
-    BibleVerseo = BibleVerse()
-    search_components = BibleVerseo.separate_query('#search Genesis 1:1-9, John 1:1-9!ESV')
-    print(search_components)
-    url = BibleVerseo.get_url(search_components)
-    print(url)
-
-    passage_text_list = BibleVerseo.get_passage_text(url)
-
-    print(passage_text_list)
-
-    formatted_verse_list = BibleVerseo.get_verses(search_components)
-    print(formatted_verse_list)
-
-    formatted_passage_text_list = BibleVerseo.format_passage_text(passage_text_list, formatted_verse_list)
-    print(formatted_passage_text_list)
+    BibleVerseo = BibleVerse('#search Genesis 1:1-9, John 1:1-9!ESV')
+    print(BibleVerseo.get_verses_list())
