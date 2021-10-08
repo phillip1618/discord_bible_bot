@@ -10,6 +10,15 @@ If users wish to reference the verse of the day, then they would have to type in
 
 ## Set-up
 
+A `.env` file must be set up with the following values:
+
+```
+TOKEN=secret-discord-token
+SENTRY_SDK_INIT=secret-sentry-dsn
+SENTRY_PROD='DEV' or 'PROD'
+VOTD_WEBHOOK_URL=secret-votd-discord-channel-webhook
+```
+
 The Discord Bot has been set up within an AWS EC2 instance (I use 'Amazon Linux 2 AMI') in order for the bot to be run on the cloud. Once the instance and connection to the instance has been set up, here are some further set up instructions:
 
 1. Install python using `sudo yum install python3`
