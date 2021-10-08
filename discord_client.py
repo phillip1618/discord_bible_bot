@@ -42,23 +42,7 @@ class DiscordClient(discord.Client):
                     if iter == 0:
                         await message.channel.send(verse)
                     else:
-                        verse_indices_list = [0]
-                        counter = 0
-                        start_ind = 0
-                        end_ind = 0
-                        
-                        while len(verse[verse_indices_list[counter]:]) > 2000:
-                            start_ind = verse_indices_list[counter]
-                            end_ind = start_ind + 1999
-
-                            while verse[end_ind] != ' ' and verse[end_ind] != '.':
-                                end_ind -= 1
-
-                            verse_indices_list.append(end_ind + 1)
-                            verse_indices_list.append(end_ind + 1)
-                            counter += 2
-
-                        verse_indices_list.append(len(verse))
+                        verse_indices_list = self.get_verse_indices_list(verse)
 
                         iter = len(verse_indices_list)//2
 
@@ -92,3 +76,24 @@ class DiscordClient(discord.Client):
                 self.votd = self.get_votd()
                 webhook.send(self.votd)
                 sleep(61)
+
+    def get_verse_indices_list(self, verse):
+        verse_indices_list = [0]
+        counter = 0
+        start_ind = 0
+        end_ind = 0
+        
+        while len(verse[verse_indices_list[counter]:]) > 2000:
+            start_ind = verse_indices_list[counter]
+            end_ind = start_ind + 1999
+
+            while verse[end_ind] != ' ' and verse[end_ind] != '.':
+                end_ind -= 1
+
+            verse_indices_list.append(end_ind + 1)
+            verse_indices_list.append(end_ind + 1)
+            counter += 2
+
+        verse_indices_list.append(len(verse))
+
+        return verse_indices_list
