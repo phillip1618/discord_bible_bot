@@ -42,14 +42,29 @@ class DiscordClient(discord.Client):
                     if iter == 0:
                         await message.channel.send(verse)
                     else:
+                        verse_indices_list = [0]
                         counter = 0
-                        for i in range(iter):
-                            start_ind = (i)*2000
-                            end_ind = (i+1)*2000
-                            await message.channel.send(verse[start_ind:end_ind])
-                            counter += 1
+                        start_ind = 0
+                        end_ind = 0
                         
-                        await message.channel.send(verse[counter*2000:])
+                        while len(verse[verse_indices_list[counter]:]) > 2000:
+                            start_ind = verse_indices_list[counter]
+                            end_ind = start_ind + 1999
+
+                            while verse[end_ind] != ' ' and verse[end_ind] != '.':
+                                end_ind -= 1
+
+                            verse_indices_list.append(end_ind + 1)
+                            verse_indices_list.append(end_ind + 1)
+                            counter += 2
+
+                        verse_indices_list.append(len(verse))
+
+                        iter = len(verse_indices_list)//2
+
+                        for i in range(iter):
+                            await message.channel.send(verse[verse_indices_list[2*i]:verse_indices_list[2*i+1]])
+
                     await message.channel.send('_ _')
             else:
                 await message.channel.send('Invalid query. Please input appropriate query for Bible verses.')
