@@ -8,6 +8,8 @@ from time import sleep
 from dotenv import load_dotenv
 from threading import Thread
 
+from bible_search import BibleSearch
+
 load_dotenv()
 
 class DiscordClient(discord.Client):
@@ -29,7 +31,12 @@ class DiscordClient(discord.Client):
 
             await message.channel.send(self.votd)
 
-        #if message.content.startswith('#search'):
+        if message.content.startswith('#search '):
+
+            bible_search = BibleSearch(message.content)
+            
+            for verse in bible_search.verses_list:
+                await message.channel.send(verse)
 
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')

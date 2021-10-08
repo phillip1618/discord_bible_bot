@@ -35,8 +35,6 @@ class BibleSearch:
         html = page.read().decode("utf-8")
 
         soup = BeautifulSoup(html, 'html.parser')
-        sample_html_text_list = soup.find_all('div')
-        #print(sample_html_text_list)
         html_text_list = soup.find_all('div', class_='passage-text')
 
         for html in html_text_list:
