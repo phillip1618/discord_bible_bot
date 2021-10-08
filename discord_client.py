@@ -37,7 +37,19 @@ class DiscordClient(discord.Client):
             
             if bible_search.verses_list:
                 for verse in bible_search.verses_list:
-                    await message.channel.send(verse)
+                    n = len(verse)
+                    iter = n // 2000
+                    if iter == 0:
+                        await message.channel.send(verse)
+                    else:
+                        counter = 0
+                        for i in range(iter):
+                            start_ind = (i)*2000
+                            end_ind = (i+1)*2000
+                            await message.channel.send(verse[start_ind:end_ind])
+                            counter += 1
+                        
+                        await message.channel.send(verse[counter*2000:])
                     await message.channel.send('_ _')
             else:
                 await message.channel.send('Invalid query. Please input appropriate query for Bible verses.')
