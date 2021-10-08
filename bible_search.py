@@ -11,7 +11,11 @@ class BibleSearch:
     def separate_query(self):
         search = self.query[7:]
         search = search.replace(" ", "")
-        search_components = search.split("!")
+
+        if '!' in search:
+            search_components = search.split("!")
+        else:
+            search_components = [search, 'ESV']
 
         return search_components
 
