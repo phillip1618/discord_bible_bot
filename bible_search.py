@@ -81,7 +81,9 @@ class BibleSearch:
         for i in range(n):
             passage_text_list[i] = passage_text_list[i].replace("\xa0", " ")
             passage_text_list[i] = re.sub('\([A-Z]\)', '', passage_text_list[i])
+            passage_text_list[i] = re.sub('\([A-Z][A-Z]\)', '', passage_text_list[i])
             passage_text_list[i] = re.sub('\[[a-z]\]', '', passage_text_list[i])
+            passage_text_list[i] = re.sub('\[[a-z][a-z]\]', '', passage_text_list[i])
 
             passage_text_list[i] += '-' + formatted_verse_list[i]
         
