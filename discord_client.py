@@ -38,6 +38,12 @@ class DiscordClient(discord.Client):
             if bible_search.verses_list:
                 for verse in bible_search.verses_list:
                     n = len(verse)
+
+                    if n > 10000:
+                        await message.channel.send('The queried passage length is too long. The passage length limit may not exceed 10000 characters. Please query for a shorter passage.')
+                        await message.channel.send('_ _')
+                        continue
+
                     iter = n // 2000
                     if iter == 0:
                         await message.channel.send(verse)
