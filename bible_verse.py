@@ -3,7 +3,7 @@ import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
-class BibleVerse:
+class BibleSearch:
     def __init__(self, query):
         self.query = query
         self.verses_list = self.get_verses_list()
@@ -96,5 +96,5 @@ class BibleVerse:
         return verses_list
 
 if __name__ == '__main__':
-    BibleVerseo = BibleVerse('#search Genesis 1:1-9, John 1:1-9!ESV')
-    print(BibleVerseo.get_verses_list())
+    BibleSearchx = BibleSearch('#search Genesis 1:1-9, John 1:1-9!ESV')
+    print(BibleSearchx.get_verses_list())
