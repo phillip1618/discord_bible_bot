@@ -10,7 +10,7 @@ If users wish to reference the verse of the day, then they would have to type in
 
 ## Set-up
 
-A `.env` file must be set up with the following values:
+A Sentry account must be created, and a Sentry DSN must be obtained. An AWS account must also be created. A `.env` file must be set up with the following values:
 
 ```
 TOKEN=secret-discord-token
