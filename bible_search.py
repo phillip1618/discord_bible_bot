@@ -72,7 +72,12 @@ class BibleSearch:
                 formatted_verse += verse[str_index]
                 str_index += 1
 
-            formatted_verse += ' ' + verse[str_index:]
+                if str_index == len(verse):
+                    break
+
+            if str_index < len(verse):
+                formatted_verse += ' ' + verse[str_index:]
+            
             formatted_verse_list.append(formatted_verse)
 
         self.verse_reference = formatted_verse_list
