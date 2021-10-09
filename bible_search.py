@@ -62,7 +62,10 @@ class BibleSearch:
             str_index = 0
 
             if verse[0].isdigit():
-                formatted_verse += verse[0] + ' '
+                formatted_verse += verse[0] + ' ' + verse[1].upper()
+                str_index += 2
+            else:
+                formatted_verse += verse[0].upper()
                 str_index += 1
 
             while not verse[str_index].isdigit():
@@ -72,6 +75,7 @@ class BibleSearch:
             formatted_verse += ' ' + verse[str_index:]
             formatted_verse_list.append(formatted_verse)
 
+        self.verse_reference = formatted_verse_list
         return formatted_verse_list
     
     def format_passage_text(self, passage_text_list, formatted_verse_list):
