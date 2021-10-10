@@ -58,12 +58,26 @@ class BibleSearch:
     #obtain list of verse references to passages
     def get_verses(self, search_components):
         verses = search_components[0]
+        version = search_components[1]
+
         verses_list = verses.split(',')
 
         formatted_verse_list = []
 
-        for verse in verses_list:
+        verified_verses = []
 
+        for verse in verses_list:
+            url = "https://www.biblegateway.com/passage/?search=" + verse + "&version=" + version
+            page = urlopen(url)
+            html = page.read().decode("utf-8")
+
+            soup = BeautifulSoup(html, 'html.parser')
+            html_text = soup.find('div', class_='passage-text')
+
+            if html_text:
+                verified_verses.append(verse)
+            
+        for verse in verified_verses:
             formatted_verse = ''
             str_index = 0
 
