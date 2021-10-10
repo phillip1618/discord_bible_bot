@@ -8,6 +8,8 @@ In the "verse-of-the-day" text channel, there is a webhook that has been integra
 
 If users wish to reference the verse of the day, then they would have to type in `#votd` and the Bible Bot will send the verse.
 
+The Bible bot also includes a search feature. The User queries for verses using this format: `#search {list of verses separated by commas}!{version}`. When the version isn't explicitly referenced, the default version becomes ESV (English Standard Version).
+
 ## Set-up
 
 A Sentry account must be created, and a Sentry DSN must be obtained. An AWS account must also be created. A `.env` file must be set up with the following values:
