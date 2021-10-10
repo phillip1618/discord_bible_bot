@@ -25,8 +25,9 @@ The Discord Bot has been set up within an AWS EC2 instance (I use 'Amazon Linux 
 2. Install pip using `sudo yum install pip`
 3. Install git using `sudo yum install git`
 4. Clone the repo, and a new directory 'discord_bible_bot' will appear
-5. Install required python packages using `pip install -r discord_bible_bot/requirements.txt`
-6. Run the application as a background service using `nohup python3 bible_main.py </dev/null &>/dev/null &`
+5. Run `cd discord_bible_bot`
+6. Install required python packages using `pip install -r requirements.txt`
+7. Run the application as a background service using `nohup python3 discord_bible_bot/bible_main.py </dev/null &>/dev/null &`
 
 ## Future Implementations
 
