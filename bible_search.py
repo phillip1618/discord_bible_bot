@@ -3,14 +3,15 @@ import re
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
+
 class BibleSearch:
     def __init__(self, query):
         self.query = query
         self.verses_list = self.get_verses_list()
 
-    #separates query into a list of two components:
-    #1. string of Bible verses references
-    #2. Desired Bible version 
+    # separates query into a list of two components:
+    # 1. string of Bible verses references
+    # 2. Desired Bible version
     def separate_query(self):
         search = self.query[7:]
         search = search.replace(" ", "")
@@ -22,8 +23,8 @@ class BibleSearch:
 
         return search_components
 
-    
-    #obtain Bible Gateway url to extract data from
+
+    # obtain Bible Gateway url to extract data from
     def get_url(self, search_components):
 
         verses = search_components[0]
@@ -36,10 +37,10 @@ class BibleSearch:
 
         return url
 
-    #obtain text via webscraping from Bible Gateway html documents
+    # obtain text via webscraping from Bible Gateway html documents
     def get_passage_text(self, url):
         passage_text_list = []
-        
+
         page = urlopen(url)
         html = page.read().decode("utf-8")
 
@@ -55,7 +56,7 @@ class BibleSearch:
 
         return passage_text_list
 
-    #obtain list of verse references to passages
+    # obtain list of verse references to passages
     def get_verses(self, search_components):
         verses = search_components[0]
         version = search_components[1]
@@ -76,7 +77,7 @@ class BibleSearch:
 
             if html_text:
                 verified_verses.append(verse)
-            
+
         for verse in verified_verses:
             formatted_verse = ''
             str_index = 0
@@ -97,13 +98,13 @@ class BibleSearch:
 
             if str_index < len(verse):
                 formatted_verse += ' ' + verse[str_index:]
-            
+
             formatted_verse_list.append(formatted_verse)
 
         self.verse_reference = formatted_verse_list
         return formatted_verse_list
-    
-    #obtains new list of properly formatted passages
+
+    # obtains new list of properly formatted passages
     def format_passage_text(self, passage_text_list, formatted_verse_list):
 
         n = len(passage_text_list)
@@ -116,10 +117,10 @@ class BibleSearch:
             passage_text_list[i] = re.sub('\[[a-z][a-z]\]', '', passage_text_list[i])
 
             passage_text_list[i] += '-' + formatted_verse_list[i]
-        
+
         return passage_text_list
-    
-    #utilizes all written helper functions to output list of passages (need to refactor later)
+
+    # utilizes all written helper functions to output list of passages (need to refactor later)
     def get_verses_list(self):
         search_components = self.separate_query()
         url = self.get_url(search_components)
@@ -132,6 +133,7 @@ class BibleSearch:
         else:
             verses_list = []
             return verses_list
+
 
 if __name__ == '__main__':
     BibleSearchx = BibleSearch('#search Genesis 1:1-9, John 1:1-9!ESV')
