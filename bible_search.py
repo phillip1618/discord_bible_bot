@@ -23,10 +23,8 @@ class BibleSearch:
 
         return search_components
 
-
     # obtain Bible Gateway url to extract data from
     def get_url(self, search_components):
-
         verses = search_components[0]
         version = search_components[1]
 
