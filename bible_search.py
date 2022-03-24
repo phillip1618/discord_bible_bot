@@ -81,7 +81,10 @@ class BibleSearch:
         verified_verses = []
 
         for verse in verses_list:
-            url = "https://www.biblegateway.com/passage/?search=" + verse + "&version=" + version
+            url = "https://www.biblegateway.com/passage/?search={verses}&version={version}".format(
+                verses=verse,
+                version={version}
+            )
             page = urlopen(url)
             html = page.read().decode("utf-8")
 
