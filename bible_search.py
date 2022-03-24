@@ -7,15 +7,15 @@ from bs4 import BeautifulSoup
 class BibleSearch:
     def __init__(self, query):
         self.query = query
-        self.verses_list = self.get_verses_list()
-    
+        self.verses_list = self.get_verses_list(self.query)
 
-    def separate_query(self):
-    """
-    Separates query into a list of two components:
-    1. string of Bible verses references
-    2. Desired Bible version
-    """
+
+    def separate_query(self, query):
+        """
+        Separates query into a list of two components:
+        1. string of Bible verses references
+        2. Desired Bible version
+        """
         search = self.query[7:]
         search = search.replace(" ", "")
 
@@ -134,11 +134,11 @@ class BibleSearch:
         return passage_text_list
 
 
-    def get_verses_list(self):
+    def get_verses_list(self, query):
         """
         Utilizes all written helper functions to output list of passages (need to refactor later)
         """
-        search_components = self.separate_query()
+        search_components = self.separate_query(query)
         url = self.get_url(search_components)
         passage_text_list = self.get_passage_text(url)
 
