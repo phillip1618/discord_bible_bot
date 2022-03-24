@@ -37,7 +37,10 @@ class BibleSearch:
         verses = verses.replace(":", "%3A")
         verses = verses.replace(",", "%2C")
 
-        url = "https://www.biblegateway.com/passage/?search=" + verses + "&version=" + version
+        url = "https://www.biblegateway.com/passage/?search={verses}&version={version}".format(
+            verses=verses,
+            version=version
+        ) 
 
         return url
 
