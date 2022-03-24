@@ -8,11 +8,14 @@ class BibleSearch:
     def __init__(self, query):
         self.query = query
         self.verses_list = self.get_verses_list()
+    
 
-    # separates query into a list of two components:
-    # 1. string of Bible verses references
-    # 2. Desired Bible version
     def separate_query(self):
+    """
+    Separates query into a list of two components:
+    1. string of Bible verses references
+    2. Desired Bible version
+    """
         search = self.query[7:]
         search = search.replace(" ", "")
 
@@ -23,8 +26,11 @@ class BibleSearch:
 
         return search_components
 
-    # obtain Bible Gateway url to extract data from
+
     def get_url(self, search_components):
+        """
+        Generate Bible Gateway url to extract data from
+        """
         verses = search_components[0]
         version = search_components[1]
 
@@ -35,8 +41,11 @@ class BibleSearch:
 
         return url
 
-    # obtain text via webscraping from Bible Gateway html documents
+
     def get_passage_text(self, url):
+        """
+        Obtain text via webscraping from Bible Gateway html documents
+        """
         passage_text_list = []
 
         page = urlopen(url)
@@ -54,8 +63,11 @@ class BibleSearch:
 
         return passage_text_list
 
-    # obtain list of verse references to passages
+
     def get_verses(self, search_components):
+        """
+        Obtain list of verse references to passages
+        """
         verses = search_components[0]
         version = search_components[1]
 
@@ -102,8 +114,11 @@ class BibleSearch:
         self.verse_reference = formatted_verse_list
         return formatted_verse_list
 
-    # obtains new list of properly formatted passages
+
     def format_passage_text(self, passage_text_list, formatted_verse_list):
+        """
+        Obtains new list of properly formatted passages
+        """
 
         n = len(passage_text_list)
 
@@ -118,8 +133,11 @@ class BibleSearch:
 
         return passage_text_list
 
-    # utilizes all written helper functions to output list of passages (need to refactor later)
+
     def get_verses_list(self):
+        """
+        Utilizes all written helper functions to output list of passages (need to refactor later)
+        """
         search_components = self.separate_query()
         url = self.get_url(search_components)
         passage_text_list = self.get_passage_text(url)
