@@ -16,7 +16,7 @@ class BibleSearch:
         1. string of Bible verses references
         2. Desired Bible version
         """
-        search = self.query[7:]
+        search = query[7:]
         search = search.replace(" ", "")
 
         if '!' in search:
