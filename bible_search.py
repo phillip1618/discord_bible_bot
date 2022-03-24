@@ -10,7 +10,6 @@ class BibleSearch:
         self.search_components = self.separate_query(self.query)
         self.passage_dictionary = self.generate_verified_passage_dictionary(self.search_components)
 
-
     def separate_query(self, query):
         """
         Separates query into a list of two components:
@@ -27,7 +26,6 @@ class BibleSearch:
 
         return search_components
 
-
     def get_url(self, verse, version):
         """
         Generate Bible Gateway url to extract data from
@@ -38,10 +36,9 @@ class BibleSearch:
         url = "https://www.biblegateway.com/passage/?search={verse}&version={version}".format(
             verse=verse,
             version=version
-        ) 
+        )
 
         return url
-
 
     def generate_passage_text(self, html_text):
         """
@@ -54,7 +51,6 @@ class BibleSearch:
             passage_text += p.text
 
         return passage_text
-
 
     def format_verse(self, verse):
         formatted_verse = ''
@@ -79,7 +75,6 @@ class BibleSearch:
 
         return formatted_verse
 
-
     def format_passage_text(self, passage_text, formatted_verse):
         """
         Obtains new list of properly formatted passages
@@ -94,7 +89,6 @@ class BibleSearch:
 
         return formatted_passage_text
 
-    
     def generate_verified_passage_dictionary(self, search_components):
         verses_str = search_components[0]
         version = search_components[1]
@@ -119,7 +113,7 @@ class BibleSearch:
                 passage = self.generate_passage_text(html_text)
                 formatted_passage = self.format_passage_text(passage, formatted_verse)
                 passage_dictionary[formatted_verse] = formatted_passage
-        
+
         return passage_dictionary
 
 
