@@ -35,9 +35,9 @@ class DiscordClient(discord.Client):
 
             bible_search = BibleSearch(message.content)
             
-            if bible_search.verses_list:
+            if bible_search.passage_dictionary:
                 verse_ind = 0
-                for verse in bible_search.verses_list:
+                for verse in bible_search.passage_dictionary.values():
                     n = len(verse)
 
                     if n > 10000:

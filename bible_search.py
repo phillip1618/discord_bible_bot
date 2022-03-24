@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 class BibleSearch:
     def __init__(self, query):
         self.query = query
-        self.verses_list = self.get_verses_list(self.query)
+        self.search_components = self.separate_query(self.query)
+        self.passage_dictionary = self.generate_verified_passage_dictionary(self.search_components)
 
 
     def separate_query(self, query):
@@ -27,136 +28,101 @@ class BibleSearch:
         return search_components
 
 
-    def get_url(self, search_components):
+    def get_url(self, verse, version):
         """
         Generate Bible Gateway url to extract data from
         """
-        verses = search_components[0]
-        version = search_components[1]
+        verse = verse.replace(":", "%3A")
+        verse = verse.replace(",", "%2C")
 
-        verses = verses.replace(":", "%3A")
-        verses = verses.replace(",", "%2C")
-
-        url = "https://www.biblegateway.com/passage/?search={verses}&version={version}".format(
-            verses=verses,
+        url = "https://www.biblegateway.com/passage/?search={verse}&version={version}".format(
+            verse=verse,
             version=version
         ) 
 
         return url
 
 
-    def get_passage_text(self, url):
+    def generate_passage_text(self, html_text):
         """
         Obtain text via webscraping from Bible Gateway html documents
         """
-        passage_text_list = []
+        passage_text = ''
 
-        page = urlopen(url)
-        html = page.read().decode("utf-8")
+        passage_text_html = html_text.find_all('p')
+        for p in passage_text_html:
+            passage_text += p.text
 
-        soup = BeautifulSoup(html, 'html.parser')
-        html_text_list = soup.find_all('div', class_='passage-text')
-
-        for html in html_text_list:
-            passage_text_html = html.find_all('p')
-            passage_text = ''
-            for p in passage_text_html:
-                passage_text += p.text
-            passage_text_list.append(passage_text)
-
-        return passage_text_list
+        return passage_text
 
 
-    def get_verses(self, search_components):
+    def format_verse(self, verse):
+        formatted_verse = ''
+        str_index = 0
+
+        if verse[0].isdigit():
+            formatted_verse += verse[0] + ' ' + verse[1].upper()
+            str_index += 2
+        else:
+            formatted_verse += verse[0].upper()
+            str_index += 1
+
+        while not verse[str_index].isdigit():
+            formatted_verse += verse[str_index]
+            str_index += 1
+
+            if str_index == len(verse):
+                break
+
+        if str_index < len(verse):
+            formatted_verse += ' ' + verse[str_index:]
+
+        return formatted_verse
+
+
+    def format_passage_text(self, passage_text, formatted_verse):
         """
-        Obtain list of verse references to passages
+        Obtains new list of properly formatted passages
         """
-        verses = search_components[0]
+        formatted_passage_text = passage_text.replace("\xa0", " ")
+        formatted_passage_text = re.sub('\([A-Z]\)', '', formatted_passage_text)
+        formatted_passage_text = re.sub('\([A-Z][A-Z]\)', '', formatted_passage_text)
+        formatted_passage_text = re.sub('\[[a-z]\]', '', formatted_passage_text)
+        formatted_passage_text = re.sub('\[[a-z][a-z]\]', '', formatted_passage_text)
+
+        formatted_passage_text += '-' + formatted_verse
+
+        return formatted_passage_text
+
+    
+    def generate_verified_passage_dictionary(self, search_components):
+        verses_str = search_components[0]
         version = search_components[1]
 
-        verses_list = verses.split(',')
+        verses_list = verses_str.split(',')
 
-        formatted_verse_list = []
-
-        verified_verses = []
+        passage_dictionary = {}
 
         for verse in verses_list:
-            url = "https://www.biblegateway.com/passage/?search={verses}&version={version}".format(
-                verses=verse,
-                version={version}
+            url = self.get_url(
+                verse=verse,
+                version=version
             )
             page = urlopen(url)
-            html = page.read().decode("utf-8")
+            html = page.read().decode('utf-8')
 
             soup = BeautifulSoup(html, 'html.parser')
             html_text = soup.find('div', class_='passage-text')
 
             if html_text:
-                verified_verses.append(verse)
-
-        for verse in verified_verses:
-            formatted_verse = ''
-            str_index = 0
-
-            if verse[0].isdigit():
-                formatted_verse += verse[0] + ' ' + verse[1].upper()
-                str_index += 2
-            else:
-                formatted_verse += verse[0].upper()
-                str_index += 1
-
-            while not verse[str_index].isdigit():
-                formatted_verse += verse[str_index]
-                str_index += 1
-
-                if str_index == len(verse):
-                    break
-
-            if str_index < len(verse):
-                formatted_verse += ' ' + verse[str_index:]
-
-            formatted_verse_list.append(formatted_verse)
-
-        self.verse_reference = formatted_verse_list
-        return formatted_verse_list
-
-
-    def format_passage_text(self, passage_text_list, formatted_verse_list):
-        """
-        Obtains new list of properly formatted passages
-        """
-
-        n = len(passage_text_list)
-
-        for i in range(n):
-            passage_text_list[i] = passage_text_list[i].replace("\xa0", " ")
-            passage_text_list[i] = re.sub('\([A-Z]\)', '', passage_text_list[i])
-            passage_text_list[i] = re.sub('\([A-Z][A-Z]\)', '', passage_text_list[i])
-            passage_text_list[i] = re.sub('\[[a-z]\]', '', passage_text_list[i])
-            passage_text_list[i] = re.sub('\[[a-z][a-z]\]', '', passage_text_list[i])
-
-            passage_text_list[i] += '-' + formatted_verse_list[i]
-
-        return passage_text_list
-
-
-    def get_verses_list(self, query):
-        """
-        Utilizes all written helper functions to output list of passages (need to refactor later)
-        """
-        search_components = self.separate_query(query)
-        url = self.get_url(search_components)
-        passage_text_list = self.get_passage_text(url)
-
-        if passage_text_list:
-            formatted_verse_list = self.get_verses(search_components)
-            verses_list = self.format_passage_text(passage_text_list, formatted_verse_list)
-            return verses_list
-        else:
-            verses_list = []
-            return verses_list
+                formatted_verse = self.format_verse(verse)
+                passage = self.generate_passage_text(html_text)
+                formatted_passage = self.format_passage_text(passage, formatted_verse)
+                passage_dictionary[formatted_verse] = formatted_passage
+        
+        return passage_dictionary
 
 
 if __name__ == '__main__':
     BibleSearchx = BibleSearch('#search Genesis 1:1-9, John 1:1-9!ESV')
-    print(BibleSearchx.get_verses_list())
+    print(BibleSearchx.passage_dictionary)
