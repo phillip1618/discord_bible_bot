@@ -1,11 +1,14 @@
 import discord
+
 import requests
-import datetime
 import ast
 import os
+
 import datetime
+import pytz
 
 from time import sleep
+
 
 class VOTD:
     def __init__(self):
@@ -22,7 +25,7 @@ class VOTD:
             votd_verse = votd_verse.replace("&#8220;", "'")
             votd_verse = votd_verse.replace("&#8221;", "'")
 
-        votd_ref = votd_dict['votd']['display_ref']  
+        votd_ref = votd_dict['votd']['display_ref']
         votd_final = '"' + votd_verse + '" -' + votd_ref
 
         return votd_final
@@ -30,7 +33,8 @@ class VOTD:
     def votd_daily(self):
         webhook = discord.Webhook.from_url(os.getenv('VOTD_WEBHOOK_URL'), adapter=discord.RequestsWebhookAdapter())
         while True:
-            if datetime.datetime.utcnow().hour == 16 and datetime.datetime.utcnow().minute == 30:
+            datetime_now = datetime.datetime.now(pytz.timezone('US/Pacific'))
+            if datetime_now.hour == 8 and datetime_now.minute == 30:
                 self.votd = self.get_votd()
                 webhook.send(self.votd)
                 sleep(61)
