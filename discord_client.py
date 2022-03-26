@@ -8,6 +8,7 @@ from votd import VOTD
 
 load_dotenv()
 
+
 class DiscordClient(discord.Client):
     def __init__(self):
         super().__init__()
@@ -15,7 +16,7 @@ class DiscordClient(discord.Client):
 
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self))
-        votd_thread = Thread(target = self.votd.votd_daily, daemon = True)
+        votd_thread = Thread(target=self.votd.votd_daily, daemon=True)
         votd_thread.start()
 
     async def on_message(self, message):
@@ -27,7 +28,6 @@ class DiscordClient(discord.Client):
             await message.channel.send(self.votd.votd)
 
         if message.content.startswith('#search '):
-
             bible_search = BibleSearch(message.content)
             
             if bible_search.passage_dictionary:
@@ -64,7 +64,7 @@ class DiscordClient(discord.Client):
         counter = 0
         start_ind = 0
         end_ind = 0
-        
+
         while len(verse[verse_indices_list[counter]:]) > 2000:
             start_ind = verse_indices_list[counter]
             end_ind = start_ind + 1999
