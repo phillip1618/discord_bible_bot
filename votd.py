@@ -16,17 +16,17 @@ class VOTD:
 
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')
-        votd_text = votd_response.text
-        votd_string_dict = votd_text[21:-2]
-        votd_dict = ast.literal_eval(votd_string_dict)
-        votd_verse = votd_dict['votd']['text'][7:-7]
+        votd_response_text = votd_response.text
+        votd_json_str = votd_response_text[21:-2]
+        votd_json = ast.literal_eval(votd_json_str)
+        votd_verse = votd_json['votd']['text'][7:-7]
 
         if "&#8220" or "&#8221" in votd_verse:
             votd_verse = votd_verse.replace("&#8220;", "'")
             votd_verse = votd_verse.replace("&#8221;", "'")
 
-        votd_ref = votd_dict['votd']['display_ref']
-        votd_final = '"' + votd_verse + '" -' + votd_ref
+        votd_reference = votd_json['votd']['display_ref']
+        votd_final = '"' + votd_verse + '" -' + votd_reference
 
         return votd_final
 
