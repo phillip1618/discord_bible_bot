@@ -3,8 +3,8 @@ import discord
 from dotenv import load_dotenv
 from threading import Thread
 
-from bible_search import BibleSearch
-from votd import VOTD
+from scripts.bible_search import BibleSearch
+from scripts.votd import VOTD
 
 load_dotenv()
 

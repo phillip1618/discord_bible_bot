@@ -2,7 +2,7 @@ import os
 import sentry_sdk
 
 from dotenv import load_dotenv
-from discord_client import DiscordClient
+from scripts.discord_client import DiscordClient
 
 load_dotenv()
 
