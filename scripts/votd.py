@@ -3,7 +3,6 @@ import discord
 import requests
 import ast
 import os
-import re
 
 import datetime
 import pytz
@@ -28,7 +27,7 @@ class VOTD:
                 replace_bool = False
 
         return votd_verse
-    
+
     def get_votd(self):
         votd_response = requests.get('https://www.biblegateway.com/votd/get/?format=json&version=ESV&callback=BG.votdWriteCallback')
         votd_response_text = votd_response.text
