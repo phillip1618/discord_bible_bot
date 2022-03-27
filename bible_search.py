@@ -9,6 +9,7 @@ class BibleSearch:
         self.query = query
         self.search_components = self.separate_query(self.query)
         self.passage_dictionary = self.generate_verified_passage_dictionary(self.search_components)
+        self.messages_dictionary = self.generate_discord_messages(self.passage_dictionary)
 
     def separate_query(self, query):
         """
@@ -116,7 +117,60 @@ class BibleSearch:
 
         return passage_dictionary
 
+    def get_verse_indices_list(self, verse):
+        verse_indices_list = [0]
+        counter = 0
+        start_ind = 0
+        end_ind = 0
+
+        while len(verse[verse_indices_list[counter]:]) > 2000:
+            start_ind = verse_indices_list[counter]
+            end_ind = start_ind + 1999
+
+            while verse[end_ind] != ' ' and verse[end_ind] != '.':
+                end_ind -= 1
+
+            verse_indices_list.append(end_ind + 1)
+            verse_indices_list.append(end_ind + 1)
+            counter += 2
+
+        verse_indices_list.append(len(verse))
+
+        return verse_indices_list
+
+    def generate_discord_messages(self, passage_dictionary):
+        passages = list(passage_dictionary.values())
+        references = list(passage_dictionary.keys())
+        messages_dictionary = {}
+
+        for i in range(len(passages)):
+            n = len(passages[i])
+
+            if n > 10000:
+                error_message = 'The length of queried passage, {reference}, is too long. The passage length limit may not exceed 10000 characters. Please query for a shorter passage.'.format(
+                    reference=references[i]
+                )
+                messages_dictionary[references[i]] = [error_message]
+            elif n // 2000 == 0:
+                messages_dictionary[references[i]] = [passages[i]]
+            else:
+                messages = []
+                passage_indices_list = self.get_verse_indices_list(passages[i])
+                iter = len(passage_indices_list) // 2
+
+                for j in range(iter):
+                    messages.append(passages[i][passage_indices_list[2*j]:passage_indices_list[2*j+1]])
+
+                messages_dictionary[passages[i]] = messages
+
+            if i < len(passages) - 1:
+                blank_key = "blank{index}".format(index=i)
+                messages_dictionary[blank_key] = ['_ _']
+
+        return messages_dictionary
+
 
 if __name__ == '__main__':
-    BibleSearchx = BibleSearch('#search Genesis 1:1-9, John 1:1-9!ESV')
-    print(BibleSearchx.passage_dictionary)
+    BibleSearchx = BibleSearch('#search Matthew 3')
+    passage_dictionary = BibleSearchx.passage_dictionary
+    discord_messages_dictionary = BibleSearchx.generate_discord_messages(passage_dictionary)
