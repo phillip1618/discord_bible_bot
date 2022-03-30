@@ -161,7 +161,7 @@ class BibleSearch:
                 for j in range(iter):
                     messages.append(passages[i][passage_indices_list[2*j]:passage_indices_list[2*j+1]])
 
-                messages_dictionary[passages[i]] = messages
+                messages_dictionary[references[i]] = messages
 
             if i < len(passages) - 1:
                 blank_key = "blank{index}".format(index=i)
