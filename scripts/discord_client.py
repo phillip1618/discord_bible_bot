@@ -23,11 +23,11 @@ class DiscordClient(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content.startswith('#votd'):
+        if message.content == '#votd':
 
             await message.channel.send(self.votd.votd)
 
-        if message.content.startswith('#search '):
+        elif message.content.startswith('#search '):
             bible_search = BibleSearch(message.content)
             bible_messages_dictionary = bible_search.messages_dictionary
 
@@ -42,3 +42,8 @@ class DiscordClient(discord.Client):
 
                 for message_element in messages_list:
                     await message.channel.send(message_element)
+        
+        else:
+            await message.channel.send(
+                'Invalid query. Boohoo'
+            )
