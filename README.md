@@ -15,7 +15,9 @@ The Bible bot also includes a search feature. The User queries for verses using 
 A Sentry account must be created, and a Sentry DSN must be obtained. An AWS account must also be created. A `.env` file must be set up with the following values:
 
 ```text
-TOKEN=secret-discord-token
+PROD='True' or 'False'
+TOKEN_PROD=secret-discord-prod-token
+TOKEN=secret-discord-dev-token
 SENTRY_SDK_INIT=secret-sentry-dsn
 SENTRY_PROD='DEV' or 'PROD'
 VOTD_WEBHOOK_URL=secret-votd-discord-channel-webhook
@@ -29,7 +31,7 @@ The Discord Bot has been set up within an AWS EC2 instance (I use 'Amazon Linux 
 4. Clone the repo, and a new directory 'discord_bible_bot' will appear
 5. Run `cd discord_bible_bot`
 6. Install required python packages using `pip install -r requirements.txt`
-7. Run the application as a background service using `nohup python3 discord_bible_bot/bible_main.py </dev/null &>/dev/null &`
+7. Run the application as a background service using `nohup python3 bible_main.py </dev/null &>/dev/null &`
 
 ## Future Implementations
 
