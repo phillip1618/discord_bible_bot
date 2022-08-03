@@ -42,8 +42,3 @@ class DiscordClient(discord.Client):
 
                 for message_element in messages_list:
                     await message.channel.send(message_element)
-        
-        else:
-            await message.channel.send(
-                'Invalid query. Boohoo'
-            )
