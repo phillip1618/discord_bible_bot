@@ -5,7 +5,7 @@ class FirstFruits:
         self.instagram_user = instagram_user
 
     def get_profile_posts(self, instagram_user):
-        url = "https://www.instagram.com/{username}/feed/?__a=1&__d=dis".format(
+        url = "https://www.instagram.com/{username}/?__a=1&__d=dis".format(
             username=instagram_user
         )
         headers = {
@@ -19,18 +19,36 @@ class FirstFruits:
         
         return posts
 
+    def process_graph_post_media(self, node):
+        if node['__typename'] == "GraphImage":
+            media_url = node['display_url']
+        elif node['__typename'] == "GraphVideo":
+            media_url = node['video_url']
+        
+        return media_url
+
+    def process_graph_sidecar_media(self, node):
+        media_url_list = []
+        sidecar_nodes = node['edge_sidecar_to_children']['edges']
+
+        for sidecar_node in sidecar_nodes:
+            media_url = self.process_graph_post_media(sidecar_node)
+            media_url_list.append(media_url)
+        
+        return media_url_list
+
     def get_most_recent_post(self, posts):
-        images = []
         post = posts['edges'][0]['node']
 
         description = post['edge_media_to_caption']['edges'][0]['node']['text']
-        nodes = post['edge_sidecar_to_children']['edges']
 
-        for node in nodes:
-            display_url = node['node']['display_url']
-            images.append(display_url)
+        if post['__typename'] == "GraphSidecar":
+            media_url_list = self.process_graph_sidecar_media(post)
+        else:
+            media_url = self.process_graph_post_media(post)
+            media_url_list = [media_url]
 
-        return {description: images}
+        return {description: media_url_list}
 
 
 if __name__ == '__main__':
