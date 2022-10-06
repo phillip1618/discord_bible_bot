@@ -1,8 +1,12 @@
 import requests
 
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
 class FirstFruits:
     def __init__(self, instagram_user):
         self.instagram_user = instagram_user
+        self.posts_count = self.get_number_of_posts(self.instagram_user)
 
     def get_profile_posts(self, instagram_user):
         url = "https://www.instagram.com/{username}/?__a=1&__d=dis".format(
@@ -19,6 +23,20 @@ class FirstFruits:
         
         return posts
 
+    def get_number_of_posts(self, instagram_user):
+        url = "https://www.instagram.com/{username}/".format(
+            username=instagram_user
+        )
+        page = urlopen(url)
+        html = page.read().decode('utf-8')
+
+        soup = BeautifulSoup(html, 'html.parser')
+        html_text = soup.find('meta', property='og:description')
+        meta_description = html_text['content']
+        number_of_posts = meta_description.split(',')[2].strip()[:2]
+
+        return number_of_posts
+    
     def process_graph_post_media(self, node):
         if node['__typename'] == "GraphImage":
             media_url = node['display_url']
@@ -53,5 +71,7 @@ class FirstFruits:
 
 if __name__ == '__main__':
     FirstFruitsx = FirstFruits('firstfruitscbccoc')
-    posts = FirstFruitsx.get_profile_posts('firstfruitscbccoc')
-    print(FirstFruitsx.get_most_recent_post(posts))
+    # posts = FirstFruitsx.get_profile_posts('firstfruitscbccoc')
+    # print(FirstFruitsx.get_most_recent_post(posts))
+    print(FirstFruitsx.get_number_of_posts('firstfruitscbccoc'))
+    print(FirstFruitsx.posts_count)
