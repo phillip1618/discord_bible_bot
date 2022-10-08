@@ -1,4 +1,8 @@
+import discord
+
 import requests
+import os
+from time import sleep
 
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
@@ -6,7 +10,7 @@ from bs4 import BeautifulSoup
 class FirstFruits:
     def __init__(self, instagram_user):
         self.instagram_user = instagram_user
-        self.posts_count = self.get_number_of_posts(self.instagram_user)
+        self.number_of_posts = self.get_number_of_posts(self.instagram_user)
 
     def get_profile_posts(self, instagram_user):
         url = "https://www.instagram.com/{username}/?__a=1&__d=dis".format(
@@ -68,10 +72,32 @@ class FirstFruits:
 
         return {description: media_url_list}
 
+    def send_recent_post(self, post_json):
+        print('wow new post!')
+        return
+
+    def instagram_webhook(self):
+        webhook = discord.Webhook.from_url(
+            os.getenv('INSTAGRAM_WEBHOOK_URL'),
+            adapter=discord.RequestsWebhookAdapter()
+        )
+        while True:
+            current_number_of_posts = self.get_number_of_posts(
+                self.instagram_user
+            )
+            if self.number_of_posts != current_number_of_posts:
+                posts = self.get_profile_posts(self.instagram_user)
+                recent_post = self.get_most_recent_post(posts)
+                self.send_recent_post(recent_post)
+            else:
+                print('no new post :(')
+            sleep(60)
+
 
 if __name__ == '__main__':
-    FirstFruitsx = FirstFruits('firstfruitscbccoc')
+    FirstFruitsx = FirstFruits('mikpillihp')
     # posts = FirstFruitsx.get_profile_posts('firstfruitscbccoc')
     # print(FirstFruitsx.get_most_recent_post(posts))
-    print(FirstFruitsx.get_number_of_posts('firstfruitscbccoc'))
-    print(FirstFruitsx.posts_count)
+    print(FirstFruitsx.get_number_of_posts('mikpillihp'))
+    print(FirstFruitsx.number_of_posts)
+    FirstFruitsx.instagram_webhook()
