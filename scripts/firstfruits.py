@@ -72,12 +72,12 @@ class FirstFruits:
 
         return {description: media_url_list}
 
-    def send_recent_post(self, post_json):
+    def send_recent_post(self, discord_webhook):
         print('wow new post!')
         return
 
     def instagram_webhook(self):
-        webhook = discord.Webhook.from_url(
+        discord_webhook = discord.Webhook.from_url(
             os.getenv('INSTAGRAM_WEBHOOK_URL'),
             adapter=discord.RequestsWebhookAdapter()
         )
