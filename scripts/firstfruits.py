@@ -2,8 +2,10 @@ import discord
 
 import requests
 import os
+import ast
 from time import sleep
 
+import urllib.request
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -40,41 +42,73 @@ class FirstFruits:
         number_of_posts = meta_description.split(',')[2].strip()[:2]
 
         return number_of_posts
-    
-    def process_graph_post_media(self, node):
-        if node['__typename'] == "GraphImage":
-            media_url = node['display_url']
-        elif node['__typename'] == "GraphVideo":
-            media_url = node['video_url']
-        
-        return media_url
 
-    def process_graph_sidecar_media(self, node):
-        media_url_list = []
-        sidecar_nodes = node['edge_sidecar_to_children']['edges']
+    def get_most_recent_post(self):
+        profile_url = 'https://graph.instagram.com/me/media'
+        fields = [
+            'id',
+            'caption',
+            'media_type',
+            'media_url',
+            'permalink',
+            'thumbnail_url',
+            'timestamp',
+            'username',
+            'children{media_url,media_type,thumbnail_url}'
+        ]
+        fields_str = ','.join(fields)
+        access_token = os.getenv('INSTAGRAM_API_DEV_TOKEN')
+        params = {
+            'fields': fields_str,
+            'access_token': access_token
+        }
+        request = requests.get(profile_url, params=params)
+        recent_post = request.json()['data'][0]
 
-        for sidecar_node in sidecar_nodes:
-            media_url = self.process_graph_post_media(sidecar_node)
-            media_url_list.append(media_url)
-        
-        return media_url_list
+        return recent_post
 
-    def get_most_recent_post(self, posts):
-        post = posts['edges'][0]['node']
-
-        description = post['edge_media_to_caption']['edges'][0]['node']['text']
-
-        if post['__typename'] == "GraphSidecar":
-            media_url_list = self.process_graph_sidecar_media(post)
+    def process_recent_post(self, recent_post):
+        media_url_dict = {}
+        description = recent_post['caption']
+        media_type = recent_post['media_type']
+        if media_type == 'IMAGE' or media_type == 'VIDEO':
+            media_url_dict[recent_post['media_url']] = media_type
         else:
-            media_url = self.process_graph_post_media(post)
-            media_url_list = [media_url]
+            recent_post_children = recent_post['children']['data']
+            for child in recent_post_children:
+                media_url_dict[child['media_url']] = child['media_type']
+        
+        return {description: media_url_dict}
 
-        return {description: media_url_list}
+    def send_recent_post(self, discord_webhook, discord_json):
+        description = next(iter(discord_json.keys()))
+        media_url_dict = list(discord_json.values())[0]
+        files_list = []
+        discord_files = []
 
-    def send_recent_post(self, discord_webhook):
-        print('wow new post!')
-        return
+        media_index = 1
+        for key, value in media_url_dict.items():
+            media_index_str = str(media_index)
+            if value == 'IMAGE':
+                file_name = f'insta_thing{media_index_str}.jpg'
+            else:
+                file_name = f'insta_thing{media_index_str}.mp4'
+            files_list.append(file_name)
+            urllib.request.urlretrieve(
+                key,
+                file_name
+            )
+            discord_files.append(
+                discord.File(fp=file_name)
+            )
+            media_index += 1
+
+        discord_webhook.send(
+            content=description,
+            files=discord_files
+        )
+        for file in files_list:
+            os.remove(file)
 
     def instagram_webhook(self):
         discord_webhook = discord.Webhook.from_url(
@@ -85,12 +119,20 @@ class FirstFruits:
             current_number_of_posts = self.get_number_of_posts(
                 self.instagram_user
             )
-            if self.number_of_posts != current_number_of_posts:
-                posts = self.get_profile_posts(self.instagram_user)
-                recent_post = self.get_most_recent_post(posts)
-                self.send_recent_post(recent_post)
-            else:
-                print('no new post :(')
+            print('current number of posts: ', current_number_of_posts)
+            print('self.number_of_posts: ', self.number_of_posts)
+            try:
+                if self.number_of_posts != current_number_of_posts:
+                    recent_post = self.get_most_recent_post()
+                    recent_post_json = self.process_recent_post(recent_post)
+                    self.send_recent_post(discord_webhook, recent_post_json)
+                    self.number_of_posts = current_number_of_posts
+                    print('execution successful!')
+                else:
+                    print('no new post :(')
+            except Exception as err:
+                print('connectivity issues. sorry try again!')
+                print(err)
             sleep(60)
 
 

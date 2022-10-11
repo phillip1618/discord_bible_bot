@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from threading import Thread
 
 from scripts.bible_search import BibleSearch
+from scripts.firstfruits import FirstFruits
 from scripts.votd import VOTD
 
 load_dotenv()
@@ -13,11 +14,14 @@ class DiscordClient(discord.Client):
     def __init__(self):
         super().__init__()
         self.votd = VOTD()
+        self.first_fruits = FirstFruits('mikpillihptest')
 
     async def on_ready(self):
         print('We have logged in as {0.user}'.format(self))
         votd_thread = Thread(target=self.votd.votd_daily, daemon=True)
         votd_thread.start()
+        first_fruits_thread = Thread(target=self.first_fruits.instagram_webhook, daemon=True)
+        first_fruits_thread.start()
 
     async def on_message(self, message):
         if message.author == self.user:
