@@ -43,7 +43,7 @@ class FirstFruits:
 
         return number_of_posts
 
-    def get_most_recent_post(self):
+    def get_most_recent_post(self, instagram_access_token):
         profile_url = 'https://graph.instagram.com/me/media'
         fields = [
             'id',
@@ -57,7 +57,7 @@ class FirstFruits:
             'children{media_url,media_type,thumbnail_url}'
         ]
         fields_str = ','.join(fields)
-        access_token = os.getenv('INSTAGRAM_API_DEV_TOKEN')
+        access_token = instagram_access_token
         params = {
             'fields': fields_str,
             'access_token': access_token
@@ -111,19 +111,19 @@ class FirstFruits:
             os.remove(file)
 
     def instagram_webhook(self):
+        instagram_webhook = os.getenv('INSTAGRAM_WEBHOOK_URL')
+        instagram_access_token = os.getenv('INSTAGRAM_API_DEV_TOKEN')
         discord_webhook = discord.Webhook.from_url(
-            os.getenv('INSTAGRAM_WEBHOOK_URL'),
+            instagram_webhook,
             adapter=discord.RequestsWebhookAdapter()
         )
         while True:
             current_number_of_posts = self.get_number_of_posts(
                 self.instagram_user
             )
-            print('current number of posts: ', current_number_of_posts)
-            print('self.number_of_posts: ', self.number_of_posts)
             try:
                 if self.number_of_posts != current_number_of_posts:
-                    recent_post = self.get_most_recent_post()
+                    recent_post = self.get_most_recent_post(instagram_access_token)
                     recent_post_json = self.process_recent_post(recent_post)
                     self.send_recent_post(discord_webhook, recent_post_json)
                     self.number_of_posts = current_number_of_posts
