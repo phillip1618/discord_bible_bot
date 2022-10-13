@@ -97,7 +97,7 @@ class FirstFruits:
         
         len_img_list = len(img_list)
         
-        if len_img_list < 6:
+        if len_img_list < 5:
             # image resizing
             im_list_resize = [cv2.resize(img,
                             (int(img.shape[1] * h_min / img.shape[0]),
@@ -143,7 +143,7 @@ class FirstFruits:
             h_min,
             concat_image_index
         )
-        if len_img_file_list > 5:
+        if len_img_file_list > 4:
             file_name_list.append(f'concat_image{concat_image_index}.jpg')
             file_name_list.append(f'concat_image{concat_image_index + 1}.jpg')
             discord_file_list += [
