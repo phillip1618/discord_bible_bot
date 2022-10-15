@@ -1,17 +1,18 @@
-import discord
-
-import requests
 import os
-from time import sleep
-
 import urllib.request
+from datetime import date
+from time import sleep
 from urllib.request import urlopen
+
+import discord
+import requests
 from bs4 import BeautifulSoup
 
 class FirstFruits:
     def __init__(self, instagram_user):
         self.instagram_user = instagram_user
         self.number_of_posts = self.get_number_of_posts(self.instagram_user)
+        self.access_token = os.getenv('INSTAGRAM_API_DEV_TOKEN')
 
     def get_profile_posts(self, instagram_user):
         url = "https://www.instagram.com/{username}/?__a=1&__d=dis".format(
@@ -111,7 +112,6 @@ class FirstFruits:
 
     def instagram_webhook(self):
         instagram_webhook = os.getenv('INSTAGRAM_WEBHOOK_URL')
-        instagram_access_token = os.getenv('INSTAGRAM_API_DEV_TOKEN')
         discord_webhook = discord.Webhook.from_url(
             instagram_webhook,
             adapter=discord.RequestsWebhookAdapter()
@@ -122,7 +122,7 @@ class FirstFruits:
             )
             try:
                 if self.number_of_posts != current_number_of_posts:
-                    recent_post = self.get_most_recent_post(instagram_access_token)
+                    recent_post = self.get_most_recent_post(self.access_token)
                     recent_post_json = self.process_recent_post(recent_post)
                     self.send_recent_post(discord_webhook, recent_post_json)
                     self.number_of_posts = current_number_of_posts
@@ -132,6 +132,19 @@ class FirstFruits:
             except Exception as err:
                 print('connectivity issues. sorry try again!')
                 print(err)
+
+            today = date.today()
+            if today.day == 15:
+                refresh_token_url = "https://graph.instagram.com/refresh_access_token"
+                params = {
+                    'grant_type': 'ig_refresh_token',
+                    'access_token': self.access_token
+                }
+                refresh_token_request = requests.get(refresh_token_url, params=params)
+                refresh_token = refresh_token_request.json()['access_token']
+                self.access_token = refresh_token
+                print(self.access_token)
+
             sleep(60)
 
 
