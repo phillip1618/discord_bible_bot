@@ -134,7 +134,7 @@ class FirstFruits:
                 print(err)
 
             today = date.today()
-            if today.day == 15:
+            if today.day == 1:
                 refresh_token_url = "https://graph.instagram.com/refresh_access_token"
                 params = {
                     'grant_type': 'ig_refresh_token',
