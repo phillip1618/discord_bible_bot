@@ -11,6 +11,20 @@ class BibleSearch:
         self.passage_dictionary = self.generate_verified_passage_dictionary(self.search_components)
         self.messages_dictionary = self.generate_discord_messages(self.passage_dictionary)
 
+    def verify_query(self, query):
+        """
+        Verifies if:
+        - the query begins with substring '#search '
+        - there exists at most one exclamation mark in the query
+        """
+        if not query.startswith('#search '):
+            return False
+        
+        if query.count('!') > 1:
+            return False
+
+        return True
+    
     def separate_query(self, query):
         """
         Separates query into a list of two components:
