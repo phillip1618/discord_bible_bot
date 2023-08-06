@@ -3,22 +3,13 @@ import pytest
 from scripts.bible_search import BibleSearch
 
 
-def test_get_url_1():
-    query = '#search Matthew 3:20!NIV'
+@pytest.mark.parametrize('verse, version, expected_url', [
+    ('Matthew3:20', 'NIV', 'https://www.biblegateway.com/passage/?search=Matthew3%3A20&version=NIV'),
+    ('Matthew3:20,John1:15', 'NLT', 'https://www.biblegateway.com/passage/?search=Matthew3%3A20%2CJohn1%3A15&version=NLT')
+])
+
+def test_get_url(verse, version, expected_url):
+    query = "Genesis 1"
     bible_search = BibleSearch(query)
-
-    url = "https://www.biblegateway.com/passage/?search=Matthew3%3A20&version=NIV"
-
-    assert bible_search.get_url('Matthew3:20', 'NIV') == url
-
-
-def test_get_url_2():
-    query = '#search Matthew 3:20, John 1:15!NLT'
-    bible_search = BibleSearch(query)
-
-    url = "https://www.biblegateway.com/passage/?search={reference_string}&version={version}".format(
-        reference_string='Matthew3%3A20%2CJohn1%3A15',
-        version='NLT'
-    )
-
-    assert bible_search.get_url('Matthew3:20,John1:15', 'NLT') == url
+    
+    assert bible_search.get_url(verse, version) == expected_url

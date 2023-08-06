@@ -35,7 +35,8 @@ class BibleSearch:
         search = search.replace(" ", "")
 
         if '!' in search:
-            search_components = search.split("!")
+            separator_index = search.find('!')
+            search_components = [search[:separator_index], search[separator_index+1:]]
         else:
             search_components = [search, 'ESV']
 
