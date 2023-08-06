@@ -7,7 +7,7 @@ from scripts.bible_search import BibleSearch
     ('#search Matthew 3!NIV', ['Matthew3', 'NIV']),
     ('#search Matthew 3', ['Matthew3', 'ESV']),
     ('#search Matthew 3NIV', ['Matthew3NIV', 'ESV']),
-    ('$search Matthew 3:20!!NIV', ['Matthew3:20', '!NIV'])
+    ('$search Matthew 3:15!!NIV', ['Matthew3:15', '!NIV'])
 ])
 
 
