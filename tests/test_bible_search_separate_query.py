@@ -1,18 +1,18 @@
+import pytest
+
 from scripts.bible_search import BibleSearch
 
 
-def test_separate_query_1():
-    query = '#search Matthew 3!NIV'
-    bible_search = BibleSearch(query)
-    
-    assert bible_search.separate_query(query) == ['Matthew3', 'NIV']
+@pytest.mark.parametrize('query, expected_result', [
+    ('#search Matthew 3!NIV', ['Matthew3', 'NIV']),
+    ('#search Matthew 3', ['Matthew3', 'ESV'])
+])
 
 
-def test_separate_query_2():
-    query = '#search Matthew 3'
+def test_separate_query(query, expected_result):
     bible_search = BibleSearch(query)
 
-    assert bible_search.separate_query(query) == ['Matthew3', 'ESV']
+    assert bible_search.separate_query(query) == expected_result
 
 
 def test_get_url_1():
